@@ -1,0 +1,46 @@
+.board {
+    padding: 50px;
+}
+
+.table {
+    width: 80%;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.go-to-detail {
+    text-decoration: none;
+    color: #4c4f57;
+}
+
+.go-to-detail:hover {
+    text-decoration: underline;
+}
+
+.btn-grp {
+    width: 80%;
+    display: flex;
+    margin: 0 auto;
+    padding-top: 50px;
+    justify-content: flex-end;
+    align-items: flex-end;
+}
+
+.search-nav-bar {
+    width: 80%;
+    padding-bottom: 35px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+}
+
+.search-select {
+    width: 30%;
+    display: inline-block;
+}
+
+.search-input {
+    width: 50%;
+    display: inline-block;
+}

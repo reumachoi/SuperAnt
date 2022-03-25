@@ -1,0 +1,10 @@
+.btn-grp button {
+    text-align: center;
+}
+
+#idCheckMsg {
+    position: absolute;
+    font-size: 20px;
+    right: 120px;
+    top: 5px;
+}

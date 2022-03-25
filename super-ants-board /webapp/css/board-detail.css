@@ -1,0 +1,30 @@
+.detail-container {
+    padding-top: 50px;
+    padding-bottom: 50px;
+}
+
+.container .title {
+    text-align: center;
+}
+
+.btn-grp {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    padding: 30px 0;
+}
+
+.btn-gr {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+}
+
+.btn {
+    margin-right: 10px;
+}
+
+.table tr th {
+    text-align: center;
+    vertical-align: middle;
+}

@@ -1,0 +1,20 @@
+.post-box {
+    width: 70%;
+    margin: 0 auto;
+    padding-top: 150px;
+}
+
+.post-box h2 {
+    margin-bottom: 50px;
+}
+
+.post-box form .btn-grp {
+    margin-top: 50px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+}
+
+.post-box form .btn-grp button {
+    margin-right: 10px;
+}

@@ -1,0 +1,37 @@
+.login-title {
+    text-align: center;
+    padding-top: 60px;
+    padding-bottom: 20px;
+}
+
+.form__border {
+    border-left: 1px solid rgb(215, 219, 224);
+    border-right: 1px solid rgb(215, 219, 224);
+    border-bottom: 1px solid rgb(215, 219, 224);
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+}
+
+.form__border form {
+    padding: 50px 50px 20px;
+}
+
+.search-id {
+    text-align: center;
+}
+
+.search-id span {
+    display: inline-block;
+    padding: 20px;
+    color: #6e7cf8;
+    cursor: pointer;
+}
+
+.search-id span a {
+    font-size: 15px;
+}
+
+.search-id span a:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}

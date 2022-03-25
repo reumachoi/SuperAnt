@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="StockTalk">
+
+    <!-- 글 작성 테이블 추가 -->
+    <insert id="writeStockTalk" parameterType="com.dto.StockTalkDto">
+        INSERT INTO STOCKTALK(TAKINDEX, TAKTITLE, TAKUSERID, TAKCONTENT, TAKREF, TAKSTEP, TAKDEPTH, TAKDATE)
+        VALUES(TAKINDEX.nextval, #{TAKTITLE}, #{TAKUSERID}, #{TAKCONTENT}, (SELECT NVL(MAX(TAKREF)+1, 0) FROM STOCKTALK), 0, 0 , SYSDATE )
+    </insert>
+
+    <!-- 글을 리스트에 보여주기 위해 가져올 데이터  -->
+    <!-- if절은 검색 기능을 위한 코드임.  -->
+    <select id="view" parameterType="com.dto.StockBoardParam" resultType="com.dto.StockBoardDto">
+        SELECT TAKINDEX, TAKTITLE, TAKUSERID, TAKCONTENT, TAKDATE
+        FROM STOCKTALK
+        <trim prefix="WHERE" prefixOverrides="AND|OR">
+            <if test="chosen != null and chosen != '' and search != null and search != ''">
+                <if test="chosen == 'title'">
+                    AND TAKTITLE LIKE '%'||#{search}||'%'
+                </if>
+                <if test="chosen == 'content'">
+                    AND TAKCONTENT LIKE '%'||#{search}||'%'
+                </if>
+                <if test="chosen == 'writer'">
+                    AND TAKUSERID = #{search}
+                </if>
+            </if>
+        </trim>
+        ORDER BY TAKREF DESC , TAKSTEP ASC
+    </select>
+
+    <!--  글을 화면에 보여주기 위해 가져올 데이터  -->
+    <select id="getStockTalk" parameterType="Integer" resultType="com.dto.StockTalkDto">
+        SELECT *
+        FROM STOCKTALK
+        WHERE TAKINDEX = #{TAKINDEX}
+    </select>
+
+    <!--  글 수정  -->
+    <update id="updateStockTalk" parameterType="com.dto.StockTalkDto">
+        UPDATE STOCKTALK
+        SET TAKTITLE=#{TAKTITLE}, TAKCONTENT=#{TAKCONTENT}
+        WHERE TAKINDEX = #{TAKINDEX}
+    </update>
+
+    <!--  글 삭제  -->
+    <delete id="deleteStockTalk">
+        DELETE FROM STOCKTALK
+        WHERE TAKINDEX = #{TAKINDEX}
+    </delete>
+
+    <!-- 답글 관련(목록번호,답글쓰기,답글수정,답글삭제)  -->
+    <update id="replyStockTalkUpdate" parameterType="com.dto.StockTalkDto">
+        UPDATE STOCKTALK
+        SET TAKSTEP = TAKSTEP + 1
+        WHERE TAKREF = (SELECT TAKREF FROM STOCKTALK WHERE TAKINDEX = #{TAKINDEX})
+          AND TAKSTEP > (SELECT TAKSTEP FROM STOCKTALK WHERE TAKINDEX = #{TAKINDEX})
+    </update>
+
+    <!-- 답글 관련 (답글쓰기) -->
+    <insert id="replyStockTalkInsert" parameterType="com.dto.StockTalkDto">
+        INSERT INTO STOCKTALK(TAKINDEX, TAKTITLE, TAKUSERID, TAKCONTENT, TAKDATE, TAKUSERNAME, TAKREF, TAKSTEP,
+                              TAKDEPTH)
+        VALUES (TAKINDEX.nextval, #{TAKTITLE}, #{TAKUSERID}, #{TAKCONTENT}, SYSDATE, #{TAKUSERID},
+                (SELECT TAKREF FROM STOCKTALK WHERE TAKINDEX = #{TAKINDEX}),
+                (SELECT TAKSTEP FROM STOCKTALK WHERE TAKINDEX = #{TAKINDEX}) + 1,
+                (SELECT TAKDEPTH FROM STOCKTALK WHERE TAKINDEX = #{TAKINDEX}) + 1)
+    </insert>
+
+    <!--    <update id="replyUpdateAf" parameterType="com.dto.StockTalkDto">-->
+    <!--        UPDATE STOCKTALK-->
+    <!--        SET TAKTITLE = #{TAKTITLE}, TAKCONTENT=#{TAKCONTENT}-->
+    <!--        WHERE TAKINDEX = #{TAKINDEX}-->
+    <!--    </update>-->
+
+    <!--    <delete id="replyDelete" parameterType="com.dto.StockTalkDto">-->
+    <!--        DELETE FROM STOCKTALK-->
+    <!--        WHERE TAKINDEX=#{TAKINDEX}-->
+    <!--    </delete>-->
+
+</mapper>

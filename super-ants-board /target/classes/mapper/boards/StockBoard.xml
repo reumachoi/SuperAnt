@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="StockBoard">
+
+    <!-- 글 작성 테이블 추가 -->
+    <insert id="writeStockBoard" parameterType="com.dto.StockBoardDto">
+        INSERT INTO STOCKBOARD(BORINDEX, BORTITLE, BORUSERID, BORCONTENT, BORUSERNAME, BORREF, BORSTEP, BORDEPTH , BORDATE)
+        VALUES(BOARDINDEX.nextval, #{BORTITLE}, #{BORUSERID}, #{BORCONTENT},#{BORUSERID}, (SELECT NVL(MAX(BORREF)+1, 0) FROM STOCKBOARD), 0, 0 , SYSDATE)
+    </insert>
+
+    <!-- 글을 리스트에 보여주기 위해 가져올 데이터  -->
+    <!-- if절은 검색 기능을 위한 코드임.  -->
+    <select id="view" parameterType="com.dto.StockBoardParam" resultType="com.dto.StockBoardDto">
+        SELECT BORINDEX, BORTITLE, BORUSERID, BORCONTENT, BORDATE
+        FROM STOCKBOARD
+        <trim prefix="WHERE" prefixOverrides="AND|OR">
+            <if test="chosen != null and chosen != '' and search != null and search != ''">
+                <if test="chosen == 'title'">
+                    AND BORTITLE LIKE '%'||#{search}||'%'
+                </if>
+                <if test="chosen == 'content'">
+                    AND BORCONTENT LIKE '%'||#{search}||'%'
+                </if>
+                <if test="chosen == 'writer'">
+                    AND BORUSERID = #{search}
+                </if>
+            </if>
+        </trim>
+        ORDER BY BORREF DESC , BORSTEP ASC
+    </select>
+
+    <!--  글을 화면에 보여주기 위해 가져올 데이터  -->
+    <select id="getStockBoard" parameterType="Integer" resultType="com.dto.StockBoardDto">
+        SELECT *
+        FROM STOCKBOARD
+        WHERE BORINDEX = #{BORINDEX}
+    </select>
+
+    <!--  글 수정  -->
+    <update id="updateStockBoard" parameterType="com.dto.StockBoardDto">
+        UPDATE STOCKBOARD
+        SET BORTITLE=#{BORTITLE}, BORCONTENT=#{BORCONTENT}
+        WHERE BORINDEX = #{BORINDEX}
+    </update>
+
+    <!--  글 삭제  -->
+    <delete id="deleteStockBoard">
+        DELETE FROM STOCKBOARD
+        WHERE BORINDEX = #{BORINDEX}
+    </delete>
+
+    <!-- 답글 관련 (목록번호,답글쓰기,답글수정,답글삭제) -->
+    <update id="replyStockBoardUpdate" parameterType="com.dto.StockBoardDto">
+        UPDATE STOCKBOARD
+        SET BORSTEP = BORSTEP + 1
+        WHERE BORREF = (SELECT BORREF FROM STOCKBOARD WHERE BORINDEX = #{BORINDEX})
+          AND BORSTEP > (SELECT BORSTEP FROM STOCKBOARD WHERE BORINDEX = #{BORINDEX})
+    </update>
+
+    <!-- 답글 관련 (답글쓰기) -->
+    <insert id="replyStockBoardInsert" parameterType="com.dto.StockBoardDto">
+        INSERT INTO STOCKBOARD(BORINDEX, BORTITLE, BORUSERID, BORCONTENT, BORDATE, BORREF, BORSTEP,
+                               BORDEPTH)
+        VALUES (BOARDINDEX.nextval, #{BORTITLE}, #{BORUSERID}, #{BORCONTENT}, SYSDATE,
+                (SELECT BORREF FROM STOCKBOARD WHERE BORINDEX = #{BORINDEX}),
+                (SELECT BORSTEP FROM STOCKBOARD WHERE BORINDEX = #{BORINDEX}) + 1,
+                (SELECT BORDEPTH FROM STOCKBOARD WHERE BORINDEX = #{BORINDEX}) + 1)
+    </insert>
+
+    <!--    &lt;!&ndash; 답글 관련 (답글수정) &ndash;&gt;-->
+    <!--    <update id="replyUpdateAf" parameterType="com.dto.StockBoardDto">-->
+    <!--        UPDATE STOCKBOARD-->
+    <!--        SET BORTITLE = #{BORTITLE}, BORCONTENT=#{BORCONTENT}-->
+    <!--        WHERE BORINDEX = #{BORINDEX}-->
+    <!--    </update>-->
+
+    <!--    <delete id="replyDelete" parameterType="com.dto.StockBoardDto">-->
+    <!--        DELETE FROM STOCKBOARD-->
+    <!--        WHERE BORINDEX=#{BORINDEX}-->
+    <!--    </delete>-->
+
+</mapper>

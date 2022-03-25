@@ -1,0 +1,11 @@
+#app .notice {
+    margin: 0 auto;
+    width: 800px;
+}
+
+#app iframe {
+    width: 850px;
+    height: 1210px;
+    /*width: 100%;*/
+    /*height: 100%;*/
+}
